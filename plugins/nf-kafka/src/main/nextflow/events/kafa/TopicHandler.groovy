@@ -72,7 +72,12 @@ class TopicHandler {
 
     TopicHandler perform() {
         createConsumer()
-        listening ? runAsync() : consume()
+        if( listening ) {
+            runAsync()
+        }else{
+            consume()
+            closeConsumer()
+        }
         return this
     }
 
@@ -90,6 +95,10 @@ class TopicHandler {
         consumer.subscribe(Arrays.asList(topic))
         Thread.currentThread().setContextClassLoader(currentClassLoader)
         consumer
+    }
+
+    void closeConsumer(){
+        consumer.close()
     }
 
     void consume(){
@@ -114,6 +123,8 @@ class TopicHandler {
                 log.trace "Closing $topic kafka thread"
             }catch(Exception e){
                 log.error "Exception reading kafka topic $topic",e
+            }finally{
+                closeConsumer()
             }
         })
     }
