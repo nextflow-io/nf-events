@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = 'nf-events'
+rootProject.name = 'nf-kafka'
 include 'plugins'
 include('plugins:nf-kafka')
 
