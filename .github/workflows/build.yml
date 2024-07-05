@@ -20,8 +20,6 @@ jobs:
     timeout-minutes: 10
     strategy:
       fail-fast: false
-      matrix:
-        java_version: [17]
 
     steps:
       - name: Environment
@@ -33,10 +31,10 @@ jobs:
           fetch-depth: 1
           submodules: true
 
-      - name: Setup Java ${{ matrix.java_version }}
+      - name: Setup Java ${{ env.java_version }}
         uses: actions/setup-java@v1
         with:
-          java-version: ${{matrix.java_version}}
+          java-version: ${{ env.java_version }}
           architecture: x64
           distribution: 'temurin'
       
