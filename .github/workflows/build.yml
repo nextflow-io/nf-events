@@ -1,4 +1,8 @@
-name: nf-kafka CI
+name: build
+
+env:
+  java_version: 17
+
 on:
   push:
     branches:
@@ -10,14 +14,14 @@ on:
       - '*'
 jobs:
   build:
-    name: Build nf-kafka
+    name: Build
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        java_version: [11, 17]
+        java_version: [17]
 
     steps:
       - name: Environment
