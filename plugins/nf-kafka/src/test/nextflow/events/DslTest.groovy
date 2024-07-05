@@ -146,8 +146,8 @@ class DslTest extends Dsl2Spec implements KafkaContainerTrait{
             process listener{
                 input: val(msg)
                 output: stdout 
-                script:            
-                "echo $msg"
+                script: 
+                "echo ${msg[1]}"
             }            
             chn = channel.watchTopic("test").until{ it[1]=='end' }
             workflow{
@@ -163,7 +163,7 @@ class DslTest extends Dsl2Spec implements KafkaContainerTrait{
         def result = new MockScriptRunner(config).setScript(SCRIPT).execute()
 
         then:
-        [result.val[1],result.val[1]].sort() == ['echo Hola','echo Hi'].sort()
+        [result.val,result.val].sort() == ['echo Hola','echo Hi'].sort()
     }
 
     def 'cand write into and read from a topic' () {
