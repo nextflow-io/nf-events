@@ -24,4 +24,6 @@ jobs:
           architecture: x64
       
       - name: Build and upload artifact and release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :plugins:nf-kafka:upload
