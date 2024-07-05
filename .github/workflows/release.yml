@@ -12,39 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    strategy:
-      fail-fast: false
-
-    steps:
-      - name: Environment
-        run: env | sort
-
-      - name: Checkout
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-          submodules: true
-
-      - name: Setup Java ${{ env.java_version }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ env.java_version }}
-          architecture: x64
-
-      - name: Compile
-        run: ./gradlew assemble
-
-      - name: Tests
-        run: ./gradlew check
-        env:
-          GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-
   publish-gpr:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,15 +22,6 @@ jobs:
           java-version: ${{ env.java_version }}
           distribution: "temurin"
           architecture: x64
-
-      - name: build artifacts
-        run: ./gradlew clean jsonPlugin -x test -P version=${GITHUB_REF#refs/tags/}
-
-      - name: Upload artifact and release
-        uses: softprops/action-gh-release@v2
-        with:
-          draft: false
-          prerelease: false
-          body_path: CHANGELOG.md
-          files: |
-            ./plugins/nf-kafka/build/plugin/*
+      
+      - name: Build and upload artifact and release
+        run: ./gradlew :plugins:nf-kafka:upload
