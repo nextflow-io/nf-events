@@ -63,7 +63,7 @@ dependencies {
     compileOnly 'org.slf4j:slf4j-api:1.7.10'
     compileOnly 'org.pf4j:pf4j:3.4.1'
 
-    implementation 'org.apache.kafka:kafka-clients:2.6.3'
+    implementation 'org.apache.kafka:kafka-clients:3.7.1'
     
     testImplementation "io.nextflow:nextflow:$nextflowVersion"
     testImplementation "org.codehaus.groovy:groovy:3.0.10"
