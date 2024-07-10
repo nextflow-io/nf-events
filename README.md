@@ -17,7 +17,7 @@ Make sure to have Nextflow `22.10.0` or later. Add the following snippet to your
 
 ```
 plugins {
-  id 'nf-kafka@0.0.1'
+  id 'nf-kafka@0.0.2'
 }
 ```
 
@@ -126,7 +126,7 @@ services:
 
 ```
 plugins{
-   id 'nf-kafka@0.0.1'
+   id 'nf-kafka@0.0.2'
 }
 
 kafka{    
