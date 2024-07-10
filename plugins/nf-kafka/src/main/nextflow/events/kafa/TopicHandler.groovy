@@ -78,8 +78,8 @@ class TopicHandler {
         }else{
             consume()
             closeConsumer()
+            this.target.bind(Channel.STOP)
         }
-        target.bind(Channel.STOP)
         return this
     }
 
