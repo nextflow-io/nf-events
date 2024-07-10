@@ -3,6 +3,7 @@ package nextflow.events.kafa
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import groovyx.gpars.dataflow.DataflowWriteChannel
+import nextflow.Channel
 import nextflow.Session
 import nextflow.events.KafkaPlugin
 import nextflow.util.ThreadPoolBuilder
@@ -77,6 +78,7 @@ class TopicHandler {
         }else{
             consume()
             closeConsumer()
+            this.target.bind(Channel.STOP)
         }
         return this
     }

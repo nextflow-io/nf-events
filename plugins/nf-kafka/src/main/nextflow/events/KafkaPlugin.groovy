@@ -33,4 +33,9 @@ class KafkaPlugin extends BasePlugin {
     KafkaPlugin(PluginWrapper wrapper) {
         super(wrapper)
     }
+
+    @Override
+    void stop() {
+        ThreadFactory.instance.shutdownExecutors()
+    }
 }
