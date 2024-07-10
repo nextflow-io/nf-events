@@ -3,6 +3,9 @@
 .idea
 .nextflow
 
+# Ignore dev secrets
+gradle.properties
+
 # Ignore Gradle build output directory
 build
 work

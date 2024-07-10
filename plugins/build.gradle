@@ -20,10 +20,10 @@ plugins {
     id "idea"
 }
 
-ext.github_organization = 'nextflow-io'
-ext.github_username = project.findProperty('github_username') ?: 'pditommaso'
+ext.github_owner = project.findProperty('github_owner') ?: System.getenv('GITHUB_REPOSITORY_OWNER')
+ext.github_user = project.findProperty('github_user') ?: System.getenv('GITHUB_TRIGGERING_ACTOR')
+ext.github_repository = project.findProperty('github_repository') ?: System.getenv('GITHUB_REPOSITORY')
 ext.github_access_token = project.findProperty('github_access_token') ?: System.getenv('GITHUB_TOKEN')
-ext.github_commit_email = project.findProperty('github_commit_email') ?: 'paolo.ditommaso@gmail.com'
 
 jar.enabled = false
 
@@ -86,7 +86,7 @@ subprojects {
               {
                 "version": "${project.version}",
                 "date": "${timestamp}",
-                "url": "https://github.com/${github_organization}/${project.name}/releases/download/${project.version}/${project.name}-${project.version}.zip",
+                "url": "https://github.com/${github_repository}/releases/download/${project.version}/${project.name}-${project.version}.zip",
                 "requires": "${metaFromManifest('Plugin-Requires',file('src/resources/META-INF/MANIFEST.MF'))}",
                 "sha512sum": "${computeSha512(zip)}"
               }
@@ -128,8 +128,8 @@ subprojects {
                                       "$buildDir/libs/${project.name}-${project.version}-meta.json" ]}
         release = providers.provider { project.version }
         repo = providers.provider { project.name }
-        owner = github_organization
-        userName = github_username
+        owner = github_owner
+        userName = github_user
         authToken = github_access_token
         skipExisting = true
     }
@@ -143,11 +143,11 @@ classes.dependsOn subprojects.copyPluginLibs
 /*
  * Merge and publish the plugins index file
  */
-task publishIndex( type: io.nextflow.gradle.tasks.GithubRepositoryPublisher ) {
-    indexUrl = 'https://github.com/nextflow-io/plugins/main/plugins.json'
-    repos = ['nf-sqldb']
-    owner = github_organization
-    githubUser = github_username
-    githubEmail = github_commit_email
-    githubToken = github_access_token
-}
+// task publishIndex( type: io.nextflow.gradle.tasks.GithubRepositoryPublisher ) {
+//     indexUrl = 'https://github.com/nextflow-io/plugins/main/plugins.json'
+//     repos = 
+//     owner = 
+//     githubUser = 
+//     githubEmail = 
+//     githubToken = 
+// }

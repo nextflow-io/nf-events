@@ -55,13 +55,13 @@ class ChannelKafkaExtension extends PluginExtensionPoint {
     }
 
     @Factory
-    DataflowWriteChannel fromTopic(String topic, Duration duration=Duration.ofSeconds(1)) {
-        topicToChannel(topic, duration, false)
+    DataflowWriteChannel fromTopic(String topic) {
+        topicToChannel(topic, false)
     }
 
     @Factory
-    DataflowWriteChannel watchTopic(String topic, Duration duration=Duration.ofSeconds(1)) {
-        topicToChannel(topic, duration, true)
+    DataflowWriteChannel watchTopic(String topic, Map until) {
+        topicToChannel(topic, true, until)
     }
 
     @Operator
@@ -91,7 +91,7 @@ class ChannelKafkaExtension extends PluginExtensionPoint {
                 .publishMessage([key, message])
     }
 
-    private DataflowWriteChannel topicToChannel(String topic, Duration duration, boolean listening){
+    private DataflowWriteChannel topicToChannel(String topic, boolean listening, Map until=null){
         final channel = CH.create()
 
         final handler = new TopicHandler()
@@ -100,8 +100,9 @@ class ChannelKafkaExtension extends PluginExtensionPoint {
                 .withGroup(config.group)
                 .withTopic(topic)
                 .withListening(listening)
+                .withUntil(until)
                 .withTarget(channel)
-                .withDuration(duration)
+                .withDuration(Duration.ofMillis(config.pollTimeout))
         if(NF.dsl2) {
             session.addIgniter {-> handler.perform() }
         }

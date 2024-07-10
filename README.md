@@ -17,7 +17,7 @@ Make sure to have Nextflow `22.10.0` or later. Add the following snippet to your
 
 ```
 plugins {
-  id 'nf-kafa@0.0.1'
+  id 'nf-kafka@0.0.2'
 }
 ```
 
@@ -25,10 +25,11 @@ plugins {
 
 The plugin configuration is specified using the `kafka` scope: 
 
-| Config option 	               | Description 	                |
-|-------------------------------|---	                        |
-| `kafka.url`                   | The connection url. 
-| `kafka.group`                 | The group where the plugin will be attached.
+| Config option 	              | Description 	                                          | Mandatory |
+| ----------------------------- | ------------------------------------------------------- | --------- |
+| `kafka.url`                   | The connection url.                                     | yes       |
+| `kafka.group`                 | The group where the plugin will be attached.            | yes       |
+| `kafka.pollTimeout`           | The time that consumer will wait to consume from topic. | no        |
 
 For example:
 
@@ -36,6 +37,7 @@ For example:
 kafka {
   url = 'localhost:902'
   group = 'group'
+  pollTimeout = 2500 // ms
 }
 ```
 
@@ -124,7 +126,7 @@ services:
 
 ```
 plugins{
-   id 'nf-kafka@0.0.1'
+   id 'nf-kafka@0.0.2'
 }
 
 kafka{    

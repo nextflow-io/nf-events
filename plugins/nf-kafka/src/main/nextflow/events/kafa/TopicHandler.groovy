@@ -3,6 +3,7 @@ package nextflow.events.kafa
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import groovyx.gpars.dataflow.DataflowWriteChannel
+import nextflow.Channel
 import nextflow.Session
 import nextflow.events.KafkaPlugin
 import nextflow.util.ThreadPoolBuilder
@@ -31,6 +32,7 @@ class TopicHandler {
     private String topic
     private Duration duration
     private boolean listening
+    private Map until
     private Session session
 
     KafkaConsumer<String, String> consumer
@@ -60,6 +62,11 @@ class TopicHandler {
         this
     }
 
+    TopicHandler withUntil(Map until){
+        this.until = until
+        this
+    }
+
     TopicHandler withTarget(DataflowWriteChannel channel) {
         this.target = channel
         return this
@@ -77,6 +84,7 @@ class TopicHandler {
         }else{
             consume()
             closeConsumer()
+            this.target.bind(Channel.STOP)
         }
         return this
     }
@@ -105,8 +113,15 @@ class TopicHandler {
         try {
             final records = consumer.poll(duration)
             records.each {
-                target << [ it.key(), it.value()]
+                Map record = [ key:it.key(), value:it.value() ]
+                target << record
+                
+                if (record == this.until) {
+                    Thread.currentThread().interrupt()
+                    target.bind(Channel.STOP)
+                }
             }
+
         }catch(Exception e){
             log.error "Exception reading kafka topic $topic",e
         }

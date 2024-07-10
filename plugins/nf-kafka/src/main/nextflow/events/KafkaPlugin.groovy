@@ -35,14 +35,7 @@ class KafkaPlugin extends BasePlugin {
     }
 
     @Override
-    void start() {
-        super.start()
-    }
-
-    @Override
     void stop() {
         ThreadFactory.instance.shutdownExecutors()
-        super.stop()
     }
-
 }
