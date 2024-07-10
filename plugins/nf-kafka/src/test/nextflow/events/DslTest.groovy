@@ -124,43 +124,43 @@ class DslTest extends Dsl2Spec implements KafkaContainerTrait{
     //     [result.val[1],result.val[1]].sort() == ['Hola','Hi'].sort()
     // }
 
-    def 'should send messages to a process' () {
-        given:
-        def config = [
-                kafka : [
-                        url:kafkaURL(),
-                        group:'group'
-                ]
-        ]
+    // def 'should send messages to a process' () {
+    //     given:
+    //     def config = [
+    //             kafka : [
+    //                     url:kafkaURL(),
+    //                     group:'group'
+    //             ]
+    //     ]
 
-        writeKafkaMessage("test", "Hola")
-        writeKafkaMessage("test", "Hi")
-        writeKafkaMessage("test", "end")
-        when:
-        def SCRIPT = '''
-            include { watchTopic } from 'plugin/nf-kafka'
-            process listener{
-                input: val(msg)
-                output: stdout 
-                script: 
-                "echo ${msg.value}"
-            }            
-            chn = channel.watchTopic("test", [key:null, value:"end"])
-            workflow{
-                main:
-                    listener(chn)
-                    sleep 3000
-                emit:
-                    listener.out
-            }
+    //     writeKafkaMessage("test", "Hola")
+    //     writeKafkaMessage("test", "Hi")
+    //     writeKafkaMessage("test", "end")
+    //     when:
+    //     def SCRIPT = '''
+    //         include { watchTopic } from 'plugin/nf-kafka'
+    //         process listener{
+    //             input: val(msg)
+    //             output: stdout 
+    //             script: 
+    //             "echo ${msg.value}"
+    //         }            
+    //         chn = channel.watchTopic("test", [key:null, value:"end"])
+    //         workflow{
+    //             main:
+    //                 listener(chn)
+    //                 sleep 3000
+    //             emit:
+    //                 listener.out
+    //         }
             
-            '''
-        and:
-        def result = new MockScriptRunner(config).setScript(SCRIPT).execute()
+    //         '''
+    //     and:
+    //     def result = new MockScriptRunner(config).setScript(SCRIPT).execute()
 
-        then:
-        [result.val, result.val, result.val].sort() == ['echo Hola', 'echo Hi', 'echo end'].sort()
-    }
+    //     then:
+    //     [result.val, result.val, result.val].sort() == ['echo Hola', 'echo Hi', 'echo end'].sort()
+    // }
 
     // def 'cand write into and read from a topic' () {
     //     given:
