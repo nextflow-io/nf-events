@@ -15,11 +15,15 @@ class KafkaConfig {
 
     private String url
     private String group
+    private Integer pollTimeout // ms
 
     KafkaConfig(Map map){
         def config = map ?: Collections.emptyMap()
         url = config.url
         group = config.group
+        pollTimeout = config.pollTimeout
+                        .toString()
+                        .toInteger()
     }
 
     String getUrl(){
@@ -28,6 +32,10 @@ class KafkaConfig {
 
     String getGroup(){
         group
+    }
+    
+    Integer getpollTimeout(){
+        pollTimeout
     }
 
 }
