@@ -32,6 +32,7 @@ class TopicHandler {
     private String topic
     private Duration duration
     private boolean listening
+    private Map until
     private Session session
 
     KafkaConsumer<String, String> consumer
@@ -58,6 +59,11 @@ class TopicHandler {
 
     TopicHandler withListening(boolean listening){
         this.listening = listening
+        this
+    }
+
+    TopicHandler withUntil(Map until){
+        this.until = until
         this
     }
 
@@ -107,8 +113,15 @@ class TopicHandler {
         try {
             final records = consumer.poll(duration)
             records.each {
-                target << [ it.key(), it.value()]
+                Map record = [ key:it.key(), value:it.value() ]
+                target << record
+                
+                if (record == this.until) {
+                    Thread.currentThread().interrupt()
+                    target.bind(Channel.STOP)
+                }
             }
+
         }catch(Exception e){
             log.error "Exception reading kafka topic $topic",e
         }
